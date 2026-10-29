@@ -14,7 +14,7 @@ export default function DiagramCanvas() {
       // const devicePixelRatio = window.devicePixelRatio || 1;
       context.setTransform(1, 0, 0, 1, 0 ,0); // Set to identity matrix
       context.fillStyle = '#ff0000';
-      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.fillRect(0, 0, canvas.width/2, canvas.height/2);
     };
 
     // When user resizes screen
@@ -44,7 +44,7 @@ export default function DiagramCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="w-dvw h-dvw touch-none"
+      className="w-dvw h-dvh touch-none"
     />
   );
 }
