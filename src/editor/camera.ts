@@ -31,9 +31,15 @@ export function panBy(cam: Camera, dx: number, dy: number): void {
   cam.y += dy;
 }
 
-export function zoomAt(cam: Camera, screenPoint: Point, factor: number): void {
+// Sets the zoom level while keeping `screenPoint` fixed on the same world point.
+export function zoomTo(cam: Camera, screenPoint: Point, z: number): void {
   const before = screenToWorld(cam, screenPoint);
-  cam.z = clamp(cam.z * factor, MIN_ZOOM, MAX_ZOOM);
+  cam.z = clamp(z, MIN_ZOOM, MAX_ZOOM);
   cam.x = screenPoint.x - before.x * cam.z;
   cam.y = screenPoint.y - before.y * cam.z;
+}
+
+// `delta` is added to the zoom level, so zoom responds linearly to wheel distance.
+export function zoomAt(cam: Camera, screenPoint: Point, delta: number): void {
+  zoomTo(cam, screenPoint, cam.z + delta);
 }

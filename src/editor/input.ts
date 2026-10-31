@@ -1,7 +1,7 @@
 import { panBy, Point, zoomAt } from "./camera";
 import { EditorState } from "./state";
 
-const ZOOM_SPEED = 0.01;
+const ZOOM_SPEED = 0.001;
 
 export type Pan = {
   pointer: Point;
@@ -43,7 +43,7 @@ export function attachInput(
   const onWheel = (e: WheelEvent) => {
     e.preventDefault();
     if (e.ctrlKey || e.metaKey) {
-      zoomAt(state.camera, toCanvasPoint(e), Math.exp(-e.deltaY * ZOOM_SPEED));
+      zoomAt(state.camera, toCanvasPoint(e), -e.deltaY * ZOOM_SPEED);
     } else {
       panBy(state.camera, -e.deltaX, -e.deltaY);
     }

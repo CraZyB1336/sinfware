@@ -1,21 +1,21 @@
 "use client";
 
-import { createEditor } from "@/editor/editor";
+import { useEditorStore } from "@/contexts/EditorProvider";
 import { useEffect, useRef } from "react";
 
 export default function DiagramCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { attach } = useEditorStore();
 
   useEffect(() => {
     if (!canvasRef.current) return;
-    const editor = createEditor(canvasRef.current);
-    return () => editor.destroy();
-  }, [])
+    return attach(canvasRef.current);
+  }, [attach])
 
   return (
     <canvas
       ref={canvasRef}
-      className="w-dvw h-dvh touch-none"
+      className="w-dvw h-dvh touch-none absolute z-10"
     />
   );
 }

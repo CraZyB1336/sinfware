@@ -1,3 +1,4 @@
+import { zoomTo } from "./camera";
 import { attachInput } from "./input";
 import { render } from "./render";
 import { createEditorState, EditorState } from "./state"
@@ -5,6 +6,8 @@ import { createEditorState, EditorState } from "./state"
 export type Editor = {
   state: EditorState;
   requestRender: () => void;
+  subscribe: (listener: () => void) => () => void;
+  setZoom: (z: number) => void;
   destroy: () => void;
 };
 
@@ -15,7 +18,9 @@ export function createEditor(canvas: HTMLCanvasElement): Editor {
   const state = createEditorState();
   let dirty = true;
   let animationFrame = 0;
-  
+
+  const listeners = new Set<() => void>();
+
   const requestRender = () => {
     dirty = true;
   };
@@ -37,6 +42,7 @@ export function createEditor(canvas: HTMLCanvasElement): Editor {
     if (dirty) {
       dirty = false;
       render(context, state, window.devicePixelRatio || 1);
+      listeners.forEach((listener) => listener());
     }
     animationFrame = requestAnimationFrame(frame);
   };
@@ -47,10 +53,22 @@ export function createEditor(canvas: HTMLCanvasElement): Editor {
   return {
     state,
     requestRender,
+    subscribe: (listener) => {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+    setZoom: (z) => {
+      const center = { x: state.viewport.width / 2, y: state.viewport.height / 2 };
+      zoomTo(state.camera, center, z);
+      requestRender();
+    },
     destroy: () => {
       cancelAnimationFrame(animationFrame);
       resizeObserver.disconnect();
       detachInput();
+      listeners.clear();
     },
   };
 }
