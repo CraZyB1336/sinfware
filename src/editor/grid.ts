@@ -19,8 +19,8 @@ export type GridLevelLerp = {
 };
 
 export const defaultGridOptions: GridOptions = {
-  baseSpacing: 120,
-  minSpacingPx: 60,
+  baseSpacing: 200,
+  minSpacingPx: 100,
   step: 2,
   dotRadius: 1,
   color: THEME.dotColor,

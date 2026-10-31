@@ -8,11 +8,11 @@ export type Camera = {
 
 export type Point = { x: number; y: number };
 
-export const MIN_ZOOM = 0.05;
-export const MAX_ZOOM = 10.0;
+export const MIN_ZOOM = 1;
+export const MAX_ZOOM = 21;
 
 export function createCamera(): Camera {
-  return { x: 0, y: 0, z: 1};
+  return { x: 0, y: 0, z: 10};
 }
 
 // A linear transform from the screen coordinate system to the world coordinate system.
