@@ -3,14 +3,16 @@
 :root {
   --background: #0A0A0A;
   --foreground: #121317;
-  --border: #4D5061;
+  --border:#807660; /* #4D5061 prev */
   --interactable: #E3DCCA;
+  --hover: #807660;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-border: var(--border);
+  --color-hover: var(--hover);
   --color-dotColor: var(--interactable);
   --color-interactable: var(--interactable);
   --color-primary-text: var(--interactable);

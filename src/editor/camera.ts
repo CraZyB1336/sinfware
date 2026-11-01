@@ -9,7 +9,8 @@ export type Camera = {
 export type Point = { x: number; y: number };
 
 export const MIN_ZOOM = 1;
-export const MAX_ZOOM = 21;
+export const MAX_ZOOM = 20;
+export const IDENTITY = 10;
 
 export function createCamera(): Camera {
   return { x: 0, y: 0, z: 10};

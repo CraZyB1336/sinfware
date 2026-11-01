@@ -1,3 +1,5 @@
+import { ToolType } from "@/models/tools/toolInterface";
+import { DEFAULT_TOOL, TOOL_REGISTRY } from "@/models/tools/toolRegistry";
 import { zoomTo } from "./camera";
 import { attachInput } from "./input";
 import { render } from "./render";
@@ -7,6 +9,7 @@ export type Editor = {
   state: EditorState;
   requestRender: () => void;
   subscribe: (listener: () => void) => () => void;
+  setTool: (tool: ToolType) => void;
   setZoom: (z: number) => void;
   destroy: () => void;
 };
@@ -15,11 +18,12 @@ export function createEditor(canvas: HTMLCanvasElement): Editor {
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Canvas 2D context not available');
 
-  const state = createEditorState();
+  const state = createEditorState(TOOL_REGISTRY[DEFAULT_TOOL]);
   let dirty = true;
   let animationFrame = 0;
 
   const listeners = new Set<() => void>();
+  const notify = () => listeners.forEach((listener) => listener());
 
   const requestRender = () => {
     dirty = true;
@@ -42,7 +46,7 @@ export function createEditor(canvas: HTMLCanvasElement): Editor {
     if (dirty) {
       dirty = false;
       render(context, state, window.devicePixelRatio || 1);
-      listeners.forEach((listener) => listener());
+      notify();
     }
     animationFrame = requestAnimationFrame(frame);
   };
@@ -58,6 +62,15 @@ export function createEditor(canvas: HTMLCanvasElement): Editor {
       return () => {
         listeners.delete(listener);
       };
+    },
+    setTool: (t) => {
+      const next = TOOL_REGISTRY[t];
+      if (state.tool === next) return;
+      state.tool.onDeactivate(state);
+      state.tool = next;
+      state.tool.onActivate(state);
+      notify();
+      requestRender();
     },
     setZoom: (z) => {
       const center = { x: state.viewport.width / 2, y: state.viewport.height / 2 };

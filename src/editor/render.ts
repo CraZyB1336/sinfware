@@ -1,8 +1,9 @@
 import { drawDotGrid } from "./grid";
+import { drawShape } from "./shapes";
 import { EditorState } from "./state";
 
 export function render(context: CanvasRenderingContext2D, state: EditorState, devicePixelRatio: number): void {
-  const { camera, viewport } = state;
+  const { camera, viewport, shapes } = state;
 
   // Screen space
   context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
@@ -15,4 +16,5 @@ export function render(context: CanvasRenderingContext2D, state: EditorState, de
   context.setTransform(devicePixelRatio * camera.z, 0, 0, devicePixelRatio * camera.z, devicePixelRatio * camera.x, devicePixelRatio * camera.y);
 
   // Shapes are thus drawn in world space here:
+  for (const s of shapes) drawShape(context, s);
 }
