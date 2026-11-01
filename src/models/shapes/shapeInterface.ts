@@ -6,5 +6,6 @@ export default interface ShapeModel {
   height: number;
   fill: string;
   stroke: string;
+  strokeWidth: number;
   // onClick?: () => void;
 };

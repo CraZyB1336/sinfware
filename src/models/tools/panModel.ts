@@ -1,28 +1,41 @@
 import { ToolContext, ToolType } from "./toolInterface";
 import BaseTool from "./baseToolModel";
-import PanGesture from "@/models/panGesture";
+import { Point } from "@/editor/camera";
+
+type PanStart = {
+  pointer: Point;
+  camX: number;
+  camY: number;
+};
 
 export default class Pan extends BaseTool {
   readonly type = ToolType.PAN;
-  private gesture = new PanGesture();
+  private start: PanStart | null = null;
 
   override get cursor(): string {
-    return this.gesture.active ? 'grabbing' : 'grab';
+    return this.start !== null ? 'grabbing' : 'grab';
   }
 
   override onPointerDown(e: PointerEvent, context: ToolContext): void {
-    this.gesture.begin(context.state, context.toCanvas(e));
+    this.start = { 
+      pointer: context.toCanvas(e),
+      camX: context.state.camera.x,
+      camY: context.state.camera.y,
+    };
   }
 
   override onPointerMove(e: PointerEvent, context: ToolContext): void {
-    if (this.gesture.move(context.state, context.toCanvas(e))) context.requestRender();
+    if (!this.start) return;
+    context.state.camera.x = this.start.camX + (context.toCanvas(e).x - this.start.pointer.x);
+    context.state.camera.y = this.start.camY + (context.toCanvas(e).y - this.start.pointer.y);
+    context.requestRender();
   }
 
   override onPointerUp(): void {
-    this.gesture.end();
+    this.start = null;
   }
 
   override onDeactivate(): void {
-    this.gesture.end();
+    this.start = null;
   }
 }

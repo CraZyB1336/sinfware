@@ -25,9 +25,7 @@ export function createEditorState(tool: ToolModel): EditorState {
     background: THEME.viewportBackground,
     tool,
 
-    shapes: [
-      new Square("super", 50, 50, 100, 200, "blue", "white")
-    ],
+    shapes: [],
     draftShape: null,
   };
 }

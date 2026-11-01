@@ -17,6 +17,7 @@ export type Editor = {
 export function createEditor(canvas: HTMLCanvasElement): Editor {
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Canvas 2D context not available');
+  context.imageSmoothingEnabled = false;
 
   const state = createEditorState(TOOL_REGISTRY[DEFAULT_TOOL]);
   let dirty = true;
